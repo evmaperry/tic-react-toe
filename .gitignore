@@ -1,0 +1,4 @@
+
+# don't track node modules in client folder
+
+/node_modules
