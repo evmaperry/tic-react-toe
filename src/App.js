@@ -10,8 +10,8 @@ class App extends React.Component {
   constructor() {
     super()
     this.state = {
-      player1: { identity: 'player1', name: null, token: null, gamesWon: 0, color: 'green' }, // updates from PlayerForm
-      player2: { identity: 'player2', name: null, token: null, gamesWon: 0, color: 'red' }, // updates from PlayerForm
+      player1: { identity: 'player1', name: null, token: null, gamesWon: 0, }, // updates from PlayerForm
+      player2: { identity: 'player2', name: null, token: null, gamesWon: 0, }, // updates from PlayerForm
       winCondition: 1, // updates from PlayerForm
       sessionOn: null,
       gameCount: 0, // updates from Board when game finishes

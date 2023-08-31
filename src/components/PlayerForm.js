@@ -7,8 +7,8 @@ class PlayerForm extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      player1: { name: '', token: 'X' },
-      player2: { name: '', token: 'O' },
+      player1: { name: '', token: 'X', color: 'orange' },
+      player2: { name: '', token: 'O', color: 'white' },
       winCondition: 1,
     }
     this.handlePlayerChange = this.handlePlayerChange.bind(this);
