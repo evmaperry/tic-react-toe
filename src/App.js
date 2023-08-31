@@ -10,11 +10,11 @@ class App extends React.Component {
   constructor() {
     super()
     this.state = {
-      player1: { identity: 'player1', name: null, token: null, gamesWon: 0 }, // updates from PlayerForm
-      player2: { identity: 'player2', name: null, token: null, gamesWon: 0 }, // updates from PlayerForm
+      player1: { identity: 'player1', name: null, token: null, gamesWon: 0, color: 'green' }, // updates from PlayerForm
+      player2: { identity: 'player2', name: null, token: null, gamesWon: 0, color: 'red' }, // updates from PlayerForm
       winCondition: 1, // updates from PlayerForm
       sessionOn: null,
-      gameCount: 1, // updates from Board when game finishes
+      gameCount: 0, // updates from Board when game finishes
       moveCount: 0, // updates from Board when move made
       playerTurn: null, // updates from PlayerForm when game starts, Board when move made
       gameOn: false, // updates from PlayerForm when game starts
@@ -34,25 +34,23 @@ class App extends React.Component {
   }
 
   startSession(player1, player2, winCondition) {
-    this.setState(prevState => ({
-      ...prevState,
+    if (player1.name !== '' && player2.name !== '') {
+      this.setState(prevState => ({
+        ...prevState,
 
-      player1: { identity: 'player1', ...player1, gamesWon: 0 },
-      player2: { identity: 'player2', ...player2, gamesWon: 0 },
-      playerTurn: player1.name,
-      winCondition: winCondition,
-      gameOn: true,
-      sessionOn: true,
-      sessionWinner: null,
-      moveCount: 0,
-      gameCount: 1,
-      winner: null,
-    }))
-    this.clearBoard()
-  }
-
-  clearBoard () {
-    this.childBoard.current.setState({boxes:tileData});
+        player1: { identity: 'player1', ...player1, gamesWon: 0 },
+        player2: { identity: 'player2', ...player2, gamesWon: 0 },
+        playerTurn: player1.name,
+        winCondition: winCondition,
+        gameOn: true,
+        sessionOn: true,
+        sessionWinner: null,
+        moveCount: 0,
+        gameCount: 1,
+        winner: null,
+      }))
+      this.clearBoard();
+    }
   }
 
   restartGame() {
@@ -64,6 +62,11 @@ class App extends React.Component {
       moveCount: 0,
       winner: null,
     }))
+    this.clearBoard();
+  }
+
+  clearBoard() {
+    this.childBoard.current.setState({ boxes: tileData });
   }
 
   switchTurn() {
@@ -127,14 +130,38 @@ class App extends React.Component {
       <div className="App">
         <header className="App-header">
           <div className='title'>
-            <h1>Tac-Tac-Tac</h1>
-            <h3>You can play the tac-tac!</h3>
+            <h1>Tic-React-Toe</h1>
           </div>
         </header>
-        <PlayerForm
-          startSession={this.startSession}
-          winCondition={this.state.winCondition}
-        />
+        <div className='body'>
+          <div className='left-side'>
+            <PlayerForm
+              startSession={this.startSession}
+              winCondition={this.state.winCondition}
+            />
+            <StatsPanel
+              gameCount={this.state.gameCount}
+              moveCount={this.state.moveCount}
+              player1={this.state.player1}
+              player2={this.state.player2}
+              sessionOn={this.state.sessionOn} />
+          </div>
+          <div className='rightside'>
+            <Board
+              endGameWithTie={this.endGameWithTie}
+              endGameWithWin={this.endGameWithWin}
+              restartGame={this.restartGame}
+              switchTurn={this.switchTurn}
+              winner={this.state.winner}
+              sessionWinner={this.state.sessionWinner}
+              gameOn={this.state.gameOn}
+              player1={this.state.player1}
+              player2={this.state.player2}
+              playerTurn={this.state.playerTurn}
+              moveCount={this.state.moveCount}
+              ref={this.childBoard} />
+          </div>
+        </div>
         <MessagePanel
           player1={this.state.player1}
           player2={this.state.player2}
@@ -142,25 +169,6 @@ class App extends React.Component {
           gameOn={this.state.gameOn}
           winner={this.state.winner}
           sessionWinner={this.state.sessionWinner} />
-        <StatsPanel
-          gameCount={this.state.gameCount}
-          moveCount={this.state.moveCount}
-          player1={this.state.player1}
-          player2={this.state.player2}
-          sessionOn={this.state.sessionOn}/>
-        <Board
-          endGameWithTie={this.endGameWithTie}
-          endGameWithWin={this.endGameWithWin}
-          restartGame={this.restartGame}
-          switchTurn={this.switchTurn}
-          winner={this.state.winner}
-          sessionWinner={this.state.sessionWinner}
-          gameOn={this.state.gameOn}
-          player1={this.state.player1}
-          player2={this.state.player2}
-          playerTurn={this.state.playerTurn}
-          moveCount={this.state.moveCount} 
-          ref={this.childBoard} />
       </div>
     );
   }

@@ -5,11 +5,11 @@
   display: flex;
   place-self: center;
   border-radius: 20px;
+  color: #282c34;
 }
 
 .box > h1 {
   margin:auto;
-  color: #282c34;
   font-family:'Courier New', Courier, monospace;
   font-size: 80px;
   font-weight: 100;
@@ -17,15 +17,15 @@
 
 .board {
   justify-content: center;
-  padding: 10px;
-  margin: 30px auto;
-  width: 500px;
-  height: 500px;
+  padding: 20px;
+  margin: 20px auto;
+  width: 560px;
+  height: 560px;
   display: grid;
   grid-template-columns: 25% 25% 25%;
-  gap: 5px;
+  gap: 15px;
   background-color: #282c34;
-  border-radius: 20px;
+  border-radius: 10px;
 }
 
 .form-container {
@@ -45,6 +45,12 @@
 .form-player > *, .form-winCondition > *, .winCondition-radio-container > * {
   padding:10px;
   font-size: 22px;
+}
+
+.form-player-name-color {
+  display: flex;
+  flex-direction: column;
+  align-items: end;
 }
 
 input[type="text"]{
@@ -85,18 +91,38 @@ button:active {
   background-color:#424856
 }
 
+.resetButton {
+  border-radius: 10px;
+  margin-top: 0px;
+}
+
 .stats-panel {
   display: flex;
   flex-direction: row;
-  width: 600px;
-  margin: auto;
+  width: 500px;
+  padding: 0px 20px;
+  margin-top: 25px;
+  border: solid 2px black;
+  border-radius: 10px;
   justify-content: space-around;
+  font-size: 24px;
+  letter-spacing: -.05em;
 }
 
 .message{
   letter-spacing: -.1em;
-  width: 500px;
-  margin: auto;
+  width: 80%;
+  padding: 20px;
+  border-radius: 10px;
+  margin: 20px auto;
+  background-color: #282c34;
+  color: white;
+}
+
+.body {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
 }
 
 .App {

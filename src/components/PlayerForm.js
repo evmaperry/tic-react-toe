@@ -51,17 +51,29 @@ class PlayerForm extends React.Component {
           <h2>Player Details</h2>
 
           <div className='form-player'>
-            <div>
-              <label htmlFor="player1">Player 1: </label>
-              <input
-                type='text'
-                value={this.state.player1.name}
-                onChange={this.handlePlayerChange}
-                name='player1.name'
-                id='player1'>
-              </input>
-            </div>
+            <div className="form-player-name-color">
+              <div>
+                <label htmlFor="player1.name">Player 1: </label>
+                <input
+                  type='text'
+                  value={this.state.player1.name}
+                  onChange={this.handlePlayerChange}
+                  name='player1.name'
+                  id='player1.name'>
+                </input>
+              </div>
 
+              <div>
+                <label htmlFor="player1.color">Color: </label>
+                <input
+                  type='text'
+                  value={this.state.player1.color}
+                  onChange={this.handlePlayerChange}
+                  name='player1.color'
+                  id='player1.color'>
+                </input>
+              </div>
+            </div>
             <div>
               <label htmlFor="player1.X"> X</label>
               <input
@@ -92,15 +104,28 @@ class PlayerForm extends React.Component {
           <br></br>
 
           <div className="form-player">
-            <div>
-              <label htmlFor='player2.name'>Player 2: </label>
-              <input
-                type='text'
-                value={this.state.player2.name}
-                onChange={this.handlePlayerChange}
-                name='player2.name'
-                id='player2.name'>
-              </input>
+            <div className="form-player-name-color">
+              <div>
+                <label htmlFor='player2.name'>Player 2: </label>
+                <input
+                  type='text'
+                  value={this.state.player2.name}
+                  onChange={this.handlePlayerChange}
+                  name='player2.name'
+                  id='player2.name'>
+                </input>
+              </div>
+
+              <div>
+                <label htmlFor="player2.color">Color: </label>
+                <input
+                  type='text'
+                  value={this.state.player2.color}
+                  onChange={this.handlePlayerChange}
+                  name='player2.color'
+                  id='player2.color'>
+                </input>
+              </div>
             </div>
 
             <div>

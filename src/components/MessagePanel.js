@@ -15,17 +15,16 @@ class MessagePanel extends React.Component {
 
     // if session won by either player
     if (props.sessionWinner !== null) {
-      newMessage = `${props.sessionWinner} has won the session. Press 'Start Session!' to go again.`;
+      newMessage = `${props.sessionWinner} wins the session! Press 'Start Session!' to go again.`;
     }
 
+    // start of session
     else if (props.gameOn === false && props.winner === null) {
-      newMessage = `Enter details above and press 'Start Session!' to begin.`;
+      newMessage = `Enter details above and press 'Start Session!' to begin. Please enter a color that's HTML friendly`;
     }
 
-    // TODO: this message displays when a game is won on the last
-    // move,  
     else if (props.gameOn === false && props.winner) {
-      newMessage = `${props.winner} wins! Press 'Reset' to continue.`
+      newMessage = `${props.winner} wins the game! Press 'Reset' to continue the session.`
     }
 
     else if (props.gameOn === false && props.winner === false) {
