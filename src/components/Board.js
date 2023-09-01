@@ -6,33 +6,36 @@ import tileData from '../data/tileData'
 import Box from './Box'
 import _ from 'underscore'
 
-// Props: setWinner, switchTurn, gameOn, player1, player2, playerTurn, winner
-
-
 class Board extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       boxes: tileData,
     }
+
+    // game functionality
     this.updateTile = this.updateTile.bind(this);
     this.gameLogic = this.gameLogic.bind(this);
     this.checkForWin = this.checkForWin.bind(this);
-    this.checkForTie = this.checkForTie.bind(this);
     this.checkForWinningPlays = this.checkForWinningPlays.bind(this);
-    // this.addHighlights = this.addHighlights.bind(this);
     this.resetBoxes = this.resetBoxes.bind(this);
 
+    // board styling functions
     this.addBackgroundColorToStyles = this.addBackgroundColorToStyles.bind(this);
     this.addBackgroundImageToStyles = this.addBackgroundImageToStyles.bind(this);
     this.addColorToStyles = this.addColorToStyles.bind(this);
+    this.updateBoardStyleForWin = this.updateBoardStyleForWin.bind(this);
 
+    // constant(s)
     this.winningCombos = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
   }
 
+  // This function is sent to each box as prop in 
+  // reference to its box.id. It switches the value of 
+  // the clicked box to a player token depending
+  // on the playerTurn prop
   updateTile(id) {
-    // only allow setTiles to execute if 
-    // game is on
+    // only allow setTiles to execute if game is on
     if (this.props.gameOn) {
 
       this.setState(
@@ -44,7 +47,9 @@ class Board extends React.Component {
             if (tile.id === id && tile.value === null) {
               // player1
               if (this.props.playerTurn === this.props.player1.name) {
-                this.props.switchTurn(); // run switch turn on valid move
+                // run switch turn on valid move only,
+                // then return switched tile
+                this.props.switchTurn();
                 return { ...tile, value: this.props.player1.token }
               }
               // player2
@@ -59,47 +64,46 @@ class Board extends React.Component {
     }
   }
 
-  /*
-  game logic needs to:
-  1) register win => set winner to name of winner
-  2) register tie => set winner to false?
-  */
-
+  // Executes after each rerender from
+  // componentDidUpdate to test for
+  // wins/tie and add board styling after each 
+  // play
   gameLogic() {
+    // declare variables used to run game logic, style board
     const player1Tiles = this.state.boxes.filter(tile => tile.value === this.props.player1.token).map(tile => tile.id);
     const player2Tiles = this.state.boxes.filter(tile => tile.value === this.props.player2.token).map(tile => tile.id);
-    let emptyTiles = this.state.boxes.filter(tile => tile.value === null).map(tile => tile.id);
+    const emptyTiles = this.state.boxes.filter(tile => tile.value === null).map(tile => tile.id);
 
+    // WIN LOGIC:
     // check if either player won; if so, will endWithWin in app
     const didPlayer1Win = this.checkForWin(player1Tiles, this.props.player1);
     const didPlayer2Win = this.checkForWin(player2Tiles, this.props.player2);
 
-    // if a winner is not set, then check for tie; if so, will endWithTie in app
-    if (this.props.moveCount === 9 && (!didPlayer1Win && !didPlayer2Win)) {
-      this.checkForTie(this.state.boxes)
+    // TIE LOGIC:
+    if (
+      (this.props.moveCount === 9 && // if 1) we hit 9 moves
+        (!didPlayer1Win && !didPlayer2Win)) && // and 2) a winner is not set,
+      this.state.boxes.every(tile => tile.value !== null) // and 3) all boxes are non-null values
+    ) {
+      this.props.endGameWithTie() // then endWithTie executes in App.js
     }
 
-    // if no winner and no tie,
-    // update board with new style
-    // to show winning plays and add color to
-    // selected tiles
+    // STYLE BOARD
+    // if no winner and no tie, update board with new style
+    // to show winning plays and add text color to selected tiles
     if (!didPlayer1Win && !didPlayer2Win) {
       this.addStyleToBoard(player1Tiles, player2Tiles, emptyTiles);
     }
   }
 
-  checkForTie() {
-    if (this.state.boxes.every(tile => tile.value !== null)) {
-      this.props.endGameWithTie(); // winner set to false in case of tie
-    }
-  }
-
+  // Refers to winning combos, checks if
+  // all numbers in single combo are present in
+  // a player's selected tiles
   checkForWin(playerTiles, player) {
-    //const winningCombos = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
-
     for (let combo of this.winningCombos) {
       if (combo.every(id => playerTiles.includes(id))) {
         console.log('name: ' + player.name + ' won')
+        this.updateBoardStyleForWin() // after win, erase backgrounds of potential winning boxes
         this.props.endGameWithWin(player); // winner set to the player.name from props
         return true;
       }
@@ -107,14 +111,52 @@ class Board extends React.Component {
     return false;
   }
 
+  // Maps over previous boxes state
+  // to erase backgrounds and add color
+  // to the winning box.
+  updateBoardStyleForWin() {
+    this.setState(prevState => {
+      return {
+        boxes: prevState.boxes.map((box) => {
+          if (box.styles === null || box.styles.color) {
+            return box
+          }
+          // player1 winning placements
+          if (box.styles.background) {
+            if (box.value === this.props.player1.token) {
+              return { ...box, styles: { color: this.props.player1.color } }
+            }
+            // player2 winning placements
+            if (box.value === this.props.player2.token) {
+              return { ...box, styles: { color: this.props.player2.color } }
+            }
+            // all other potential wins where value === null
+            if (box.value === null) {
+              return { ...box, styles: null, }
+            }
+          }
+          else { return box }
+        })
+      }
+    })
+
+  }
+
+  // Routing function that aggregates
+  // which boxes are potential winners,
+  // accounting for boxes that are winners
+  // for both.
   addStyleToBoard(player1Tiles, player2Tiles, emptyTiles) {
     let player1Winners = this.checkForWinningPlays(player1Tiles, emptyTiles);
     let player2Winners = this.checkForWinningPlays(player2Tiles, emptyTiles);
+
+    // THIS VARIABLE TRACKS WHICH BOXES ARE WINNERS
+    // FOR BOTH PLAYERS; THESE GET A GRADIENT BACKGROUND
     let bothWinners = _.intersection(player1Winners, player2Winners);
+
+    // these boxes get solid backgrounds
     let onlyPlayer1Winners = _.difference(player1Winners, bothWinners);
     let onlyPlayer2Winners = _.difference(player2Winners, bothWinners);
-
-    //console.log('p1', player1Tiles, 'p1winners', onlyPlayer1Winners, 'p2', player2Tiles, 'p2winners', onlyPlayer2Winners, 'both', bothWinners)
 
     // add color prop to give font color to selected tiles
     this.addColorToStyles(player1Tiles, player2Tiles);
@@ -129,6 +171,8 @@ class Board extends React.Component {
 
   }
 
+  // Maps over state's boxes to reassign color property in
+  // style prop as needed
   addColorToStyles(player1Tiles, player2Tiles) {
     // all selected boxes will have a non-null
     // value property
@@ -136,10 +180,10 @@ class Board extends React.Component {
       return box.value !== null;
     })
 
-    // this boolean will provide condition to stop
-    // infinite looping
-    // look at every box in selectedBoxes (ie, those that have
-    // a non-null value). 
+    // this boolean provides condition to stop
+    // infinite looping; looks at every
+    // box in selectedBoxes (ie, those that have
+    // a non-null value) to check for proper styling
     let allSelectedBoxesHaveColorStyles = selectedBoxes.every((box) => {
       if (box.styles === null) {
         return false;
@@ -149,6 +193,8 @@ class Board extends React.Component {
       }
     })
 
+    // If not every selected box is properly
+    // styled, set the state of the boxes
     if (!allSelectedBoxesHaveColorStyles) {
       this.setState({
         boxes: this.state.boxes.map((box) => {
@@ -171,7 +217,7 @@ class Board extends React.Component {
     })
 
     let allWinningBoxesHaveSolidBackground = winningBoxes.every((box) => {
-      if (box.styles === null){ // if there's no styles defined yet. winning boxes will have no value, so no styles
+      if (box.styles === null) { // if there's no styles defined yet. winning boxes will have no value, so no styles
         return false;
       }
       else if (box.styles.background === this.props.player1.color || box.styles.background === this.props.player2.color) {
@@ -206,12 +252,13 @@ class Board extends React.Component {
       if (box.styles.background === this.props.player2.color || box.styles.background === this.props.player1.color) {
         return false;
       }
-      else if (box.styles.background === `linear-gradient(${this.props.player1.color},${this.props.player2.color})`){
+      else if (box.styles.background === `linear-gradient(${this.props.player1.color},${this.props.player2.color})`) {
         return true;
-      }})
+      }
+    })
 
 
-    console.log('bothWinningBoxes', bothWinningBoxes, 'allBoth', allBothWinningBoxesHaveGradientBackground, )
+    console.log('bothWinningBoxes', bothWinningBoxes, 'allBoth', allBothWinningBoxesHaveGradientBackground,)
     if (!allBothWinningBoxesHaveGradientBackground) {
       console.log('where set State should happen', bothWinners, 'boxes', this.state.boxes)
       this.setState({
@@ -248,62 +295,19 @@ class Board extends React.Component {
     return winningPlays
   }
 
-
-  // knowing what plays are winners for each player
-  // add a highlight of player.color to winning tiles
-  // addHighlights(player, winningPlays) {
-  //   let winningIds = winningPlays.map(tile => tile.id)
-
-  //   // check that some of the 
-  //   // winning play tiles needs a highlight
-  //   // !every true is the same as some false
-  //   // this stops infinite update loop
-  //   if (!winningPlays.every((tile) => tile.highlight === true) && this.props.gameOn) {
-
-  //     this.setState({
-  //       boxes: this.state.boxes.map((tile) => {
-  //         // logic to determine the color of the highlight
-
-  //         // if the tile being mapped over is included
-  //         // in the winning id's
-  //         if (winningIds.includes(tile.id)) {
-  //           console.log('inside addhighlights Tile that just changed:', tile)
-  //           if (tile.color === null) {
-  //             console.log('=== null')
-  //             return { ...tile, highlight: true, color: `${player.color}` }
-  //           }
-  //           else if (tile.color !== null) {
-  //             console.log('!== null. tile.color: ', tile.color)
-  //             return { ...tile, highlight: true, color: `linear-gradient(${this.props.player1.color},${this.props.player2.color})` }
-  //           }
-
-  //           // if the highlight value is false (ie, it hasn't been
-  //           // highlit yet).
-  //           // if (tile.highlight === false){
-  //           //   return { ...tile, highlight: true, color: player.color }
-  //           // }
-
-  //           //return { ...tile, highlight: true, color: `linear-gradient(${player.color},white)` } // `linear-gradient(${player.color}, #9198e5)`
-  //         }
-  //         return tile;
-  //       })
-  //     })
-  //   }
-  // }
-
-  resetBoxes() { // when called, will also call restartGame in App
-    //this.setState({ boxes: tileData })
+  resetBoxes() { // when called, calls restartGame in App
     this.props.restartGame()
   }
 
-  componentDidUpdate() { // runs after render (which happens after board state changes)
+
+  // runs after render (which happens after board state changes)
+  componentDidUpdate() {
     if (this.props.gameOn && this.props.moveCount > 0) { // logic runs after first move
       this.gameLogic()
     }
   }
 
   render() {
-    console.log('Board boxes: ', this.state.boxes)
     const boxElements = this.state.boxes.map(currentTile => {
       return (
         <Box
