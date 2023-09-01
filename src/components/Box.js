@@ -5,24 +5,14 @@ class Box extends React.Component {
     super(props);
     this.state = {
       styles: {
-        'border': null,
-        'color': null,
       }
     }
   }
 
-  static getDerivedStateFromProps(props, state) {
-    if (props.border === true){
-        return { styles: { 'border': `solid 4px ${props.color}`, 'color': `${ props.color }`}}
-    } else {
-      return { styles: { 'border': null, 'color': `${ props.color }`} }
-    }
-  }
-
   render() {
-    console.log('box props', this.props, 'state', this.state)
+    console.log('box props', this.props, 'box state', this.state)
     return (
-      <div style={this.state.styles} className="box" onClick={this.props.updateTile}>
+      <div style={this.props.styles} className="box" onClick={this.props.updateTile}>
         <h1>{this.props.value}</h1>
       </div>
     )

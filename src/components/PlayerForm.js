@@ -199,7 +199,7 @@ class PlayerForm extends React.Component {
             </div>
 
           </div>
-          <button type='button' onClick={() => this.props.startSession(this.state.player1, this.state.player2, this.state.winCondition)}>Start Session!</button>
+          <button type='button' onClick={() => this.props.startSession(this.state.player1, this.state.player2, this.state.winCondition)}>Start Match!</button>
         </form>
       </div>
     )

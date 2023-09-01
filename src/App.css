@@ -19,8 +19,8 @@
   justify-content: center;
   padding: 20px;
   margin: 20px auto;
-  width: 560px;
-  height: 560px;
+  width: 400px;
+  height: 400px;
   display: grid;
   grid-template-columns: 25% 25% 25%;
   gap: 15px;
@@ -33,7 +33,7 @@
   margin: 20px auto;
   border-radius: 10px;
   padding: 20px;
-  width: 500px;
+  width: 80%;
   color: white;
 }
 
@@ -44,7 +44,7 @@
 
 .form-player > *, .form-winCondition > *, .winCondition-radio-container > * {
   padding:10px;
-  font-size: 22px;
+  font-size: 16px;
 }
 
 .form-player-name-color {
@@ -54,9 +54,9 @@
 }
 
 input[type="text"]{
-  height: 28px;
+  height: 20px;
   vertical-align: middle;
-  font-size: 20px
+  font-size: 16px;
 }
 
 .radio {
@@ -75,11 +75,11 @@ button {
   width: 190px;
   margin: 20px;
   background-color: #424856;
-  border: solid white 4px;
+  border: solid white 2px;
   color: white;
   border-radius: 4px;
-  height: 60px;
-  font-size: 24px;
+  height: 40px;
+  font-size: 16px;
   font-weight: bold;
 }
 
@@ -96,22 +96,30 @@ button:active {
   margin-top: 0px;
 }
 
+.left-side {
+  width: 50%;
+}
+
+.right-side {
+  width: 50%;
+}
+
 .stats-panel {
   display: flex;
   flex-direction: row;
-  width: 500px;
+  width: 80%;
   padding: 0px 20px;
-  margin-top: 25px;
+  margin: 25px auto;
   border: solid 2px black;
   border-radius: 10px;
   justify-content: space-around;
-  font-size: 24px;
+  font-size: 16px;
   letter-spacing: -.05em;
 }
 
 .message{
   letter-spacing: -.1em;
-  width: 80%;
+  width: 90%;
   padding: 20px;
   border-radius: 10px;
   margin: 20px auto;

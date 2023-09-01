@@ -146,7 +146,7 @@ class App extends React.Component {
               player2={this.state.player2}
               sessionOn={this.state.sessionOn} />
           </div>
-          <div className='rightside'>
+          <div className='right-side'>
             <Board
               endGameWithTie={this.endGameWithTie}
               endGameWithWin={this.endGameWithWin}
